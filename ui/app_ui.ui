@@ -60,7 +60,7 @@
        </font>
       </property>
       <property name="text">
-       <string>Обновление</string>
+       <string>Обновление:</string>
       </property>
      </widget>
     </item>
