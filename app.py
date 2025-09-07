@@ -17,7 +17,7 @@ class MyWindow(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
-        # Устанавливаем базовый размер окна программно
+        # Install the base size of the window programmatically
         self.resize(self.minimumSizeHint())
 
         # MVC Initialization
@@ -25,8 +25,9 @@ class MyWindow(QMainWindow):
         self.view = View(ui=self.ui)
         self.controller = Controller(model=self.model, view=self.view)
 
+
 if __name__ == "__main__":
-    # Включаем Hight-DPI масштабирование
+    # Turn on Hight-DPI scaling
     QApplication.setHighDpiScaleFactorRoundingPolicy(
         Qt.HighDpiScaleFactorRoundingPolicy.PassThrough
     )
