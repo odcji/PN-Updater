@@ -6,7 +6,7 @@ from mvc.model import Model
 from mvc.view import View
 from mvc.controller import Controller
 
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtWidgets import QApplication, QMainWindow
 
 
@@ -24,6 +24,9 @@ class MyWindow(QMainWindow):
         self.model = Model()
         self.view = View(ui=self.ui)
         self.controller = Controller(model=self.model, view=self.view)
+
+        # We call the program output
+        QTimer.singleShot(0, self.controller.update_program) 
 
 
 if __name__ == "__main__":
