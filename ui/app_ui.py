@@ -10,12 +10,12 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(400, 200)
         MainWindow.setMinimumSize(QtCore.QSize(400, 200))
-        MainWindow.setMaximumSize(QtCore.QSize(400, 200))
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setEnabled(True)
         self.centralwidget.setObjectName("centralwidget")
@@ -27,7 +27,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.addItem(spacerItem)
         self.update_label = QtWidgets.QLabel(self.centralwidget)
         font = QtGui.QFont()
-        font.setPointSize(24)
+        font.setPointSize(18)
         self.update_label.setFont(font)
         self.update_label.setObjectName("update_label")
         self.verticalLayout_2.addWidget(self.update_label)
@@ -45,7 +45,7 @@ class Ui_MainWindow(object):
         self.progressBar = QtWidgets.QProgressBar(self.process_frame)
         self.progressBar.setMinimumSize(QtCore.QSize(0, 25))
         font = QtGui.QFont()
-        font.setPointSize(14)
+        font.setPointSize(12)
         self.progressBar.setFont(font)
         self.progressBar.setProperty("value", 0)
         self.progressBar.setObjectName("progressBar")
