@@ -21,6 +21,7 @@ class Controller:
         # Signals
         self.model.progress_changed.connect(self.on_progress_changed) # Progress bar value change signal
         self.model.process_changed.connect(self.on_process_changed) # QLabel text change signal
+        self.model.update_complited.connect(self.on_update_complited) # Update completion signal
 
     def __launch_program(self):
         """Launches the program"""
@@ -30,14 +31,16 @@ class Controller:
         
         if not os.path.exists(program_path): # We check the existence of the program
             notification_text = f"Программа {program_name} не найдена.\nПуть: {program_path}" # Notification text
-            Notificator.show_notification(notify_type="error", notify_title="Ошибка", notify_text=notification_text) # Show notification
+            # Show notification
+            Notificator.show_notification(notify_type="error", notify_title="Ошибка", notify_text=notification_text)
             raise FileNotFoundError(f"Программа не найдена. Путь: {program_path}") 
 
         try:
             subprocess.Popen([program_path]) # Open the program
         except Exception as e:
             notification_text = f"Ошибка при запуске программы {program_name}.\nОшибка: {e}" # Notification text
-            Notificator.show_notification(notify_type="error", notify_title="Ошибка", notify_text=notification_text) # Show notification
+            # Show notification
+            Notificator.show_notification(notify_type="error", notify_title="Ошибка", notify_text=notification_text)
             raise IOError(f"Ошибка при запуске программы: {e}")
         
     def __update_label_text(self):
@@ -47,13 +50,21 @@ class Controller:
 
     def update_program(self):
         """Triggers the program update"""
-        self.model.perform_update_in_thread(callback=self.on_update_complited) # Call the program update
+        self.model.perform_update_in_thread() # Call the program update
 
-    def on_update_complited(self):
+    def on_update_complited(self, success):
         """Handles the completion of the program update"""
-        self.view.update_buttons_state(state=True)
-        notification_text = "Программа успешно обновлена"
-        Notificator.show_notification(notify_type="info", notify_title="Успешно", notify_text=notification_text) # Show notification
+        if success:
+            self.view.update_buttons_state(open_btn_state=True, exit_btn_state=True)
+            notification_text = "Программа успешно обновлена"
+            # Show notification
+            Notificator.show_notification(notify_type="info", notify_title="Успешно", notify_text=notification_text)
+            
+        else:
+            self.view.update_buttons_state(open_btn_state=False, exit_btn_state=True)
+            notification_text = "Во время обновления произошла ошибка. Проверьте пути и права доступа."
+            # Show notification
+            Notificator.show_notification(notify_type="error", notify_title="Ошибка обновления", notify_text=notification_text)
 
     def on_progress_changed(self, value):
         """Handles the change in ProgressBar value"""

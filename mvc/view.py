@@ -16,10 +16,10 @@ class View:
         """The function updates the value of Progressbar """
         self.ui.progressBar.setValue(value) # We update the value of Progressbar
 
-    def update_buttons_state(self, state):
+    def update_buttons_state(self, open_btn_state=bool, exit_btn_state=bool):
         """The function updates the state of the 'Открыть' and 'Выход' buttons"""
-        self.ui.open_pushButton.setEnabled(state)
-        self.ui.exit_pushButton.setEnabled(state)
+        self.ui.open_pushButton.setEnabled(open_btn_state)
+        self.ui.exit_pushButton.setEnabled(exit_btn_state)
 
     def open_button_clicked(self, handler):
         """The function causes the click of the 'Открыть' button"""

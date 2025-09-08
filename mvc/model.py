@@ -12,6 +12,8 @@ from PyQt5.QtCore import QObject, pyqtSignal
 class Model(QObject):
     progress_changed = pyqtSignal(int) # Progress bar value change signal
     process_changed = pyqtSignal(str) # QLabel 'Процесс' text change signal
+    update_complited = pyqtSignal(bool) # Update completion signal
+
 
     def __init__(self):
         super().__init__()
@@ -80,7 +82,7 @@ class Model(QObject):
         else:
             return program_name
         
-    def __perform_update(self, callback):
+    def __perform_update(self):
         """Updates the program"""
         # Check that the current program path is set
         if not self.current_program_path or self.current_program_path is None:
@@ -158,15 +160,14 @@ class Model(QObject):
             self.progress_changed.emit(100) # Fully fill the progress bar
             self.process_changed.emit("Программа успешно обновлена") # Update text in QLabel 'Процесс'
 
-            callback() # Call the update completion function
+            self.update_complited.emit(True) # Update completion signal
 
         except Exception as e:
-            notification_text = f"Ошибка произошла во время обновления программы.\nОшибка:{e}"
-            raise IOError(f"Ошибка произошла во время обновления программы. Ошибка:{e}") 
+            self.update_complited.emit(False) # Update completion signal
         
-    def perform_update_in_thread(self, callback):
+    def perform_update_in_thread(self):
         """Launches the program update in a separate thread"""
-        thread = threading.Thread(target=self.__perform_update, args=(callback,)) # Create a thread
+        thread = threading.Thread(target=self.__perform_update) # Create a thread
         thread.daemon = True
         thread.start()
         return thread
