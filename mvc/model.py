@@ -22,6 +22,8 @@ class Model(QObject):
         self.config_data = self.__get_config_data() # Get data from the configuration file
         self.server_program_path = self.__get_server_program_path() # Get the path to the program on the server
         self.program_name = self.__get_program_name() # Get the program name
+        self.current_program_version = self.__get_current_program_version() # Get the current program version
+        self.server_program_version = self.__get_server_program_version() # Get the server program version
 
     def __get_config_data(self):
         """The function returns data from the configuration file"""
@@ -29,7 +31,8 @@ class Model(QObject):
 
         if not os.path.exists(config_file_path): # ПRover the existence of a configuration file
             notification_text = f"Файл конфигурации не найден.\nПуть: {config_file_path}" # Notification text
-            Notificator.show_notification(notify_type="error", notify_title="Ошибка", notify_text=notification_text) # We display a notification
+            # We display a notification
+            Notificator.show_notification(notify_type="error", notify_title="Ошибка", notify_text=notification_text)
             raise FileNotFoundError(f"Файл конфигурации не найден. Путь: {config_file_path}")
 
         try:
@@ -37,7 +40,8 @@ class Model(QObject):
                 config_data = yaml.safe_load(config_file) # We download the data from the configuration file
         except Exception as e:
             notification_text = f"Ошибка при чтении файла конфигурации.\nОшибка: {e}" # Notification text"
-            Notificator.show_notification(notify_type="error", notify_title="Ошибка", notify_text=notification_text) # We display a notification
+            # We display a notification
+            Notificator.show_notification(notify_type="error", notify_title="Ошибка", notify_text=notification_text)
             raise IOError(f"Ошибка при чтении файла конфигурации: {e}")
         
         return config_data
@@ -54,14 +58,16 @@ class Model(QObject):
         """Returns the path to the program on the server"""
         if self.config_data is None: # Check that configuration data is loaded
             notification_text = "Данные конфигурации не загружены" # Notification text
-            Notificator.show_notification(notify_type="error", notify_title="Ошибка", notify_text=notification_text) # We display a notification
+            # We display a notification
+            Notificator.show_notification(notify_type="error", notify_title="Ошибка", notify_text=notification_text)
             raise ValueError("Данные конфигурации не загружены")
         
         server_program_path = self.config_data.get("server_program_path") # Get the path to the program on the server
 
         if server_program_path is None: # Check that the path to the program on the server is set
             notification_text = "Путь к программе на сервере не указан в файле конфигурации" # Notification text
-            Notificator.show_notification(notify_type="error", notify_title="Ошибка", notify_text=notification_text) # We display a notification
+            # We display a notification
+            Notificator.show_notification(notify_type="error", notify_title="Ошибка", notify_text=notification_text)
             raise ValueError("Путь к программе на сервере не указан в файле конфигурации")
         else:
             return server_program_path
@@ -70,40 +76,86 @@ class Model(QObject):
         """Returns the program name"""
         if self.config_data is None: # Check that configuration data is loaded
             notification_text = "Данные файла конфигурации не загружены" # Notification text
-            Notificator.show_notification(notify_type="error", notify_title="Ошибка", notify_text=notification_text) # We display a notification
+            # We display a notification
+            Notificator.show_notification(notify_type="error", notify_title="Ошибка", notify_text=notification_text)
             raise ValueError("Данные файла конфигурации не загружены")
         
         program_name = self.config_data.get("program_name") # Get the program name
 
         if program_name is None: # Check that the program name is set
             notification_text = "Имя программы не указано в файле конфигурации" # Notification text
-            Notificator.show_notification(notify_type="error", notify_title="Ошибка", notify_text=notification_text) # We display a notification
+            # We display a notification
+            Notificator.show_notification(notify_type="error", notify_title="Ошибка", notify_text=notification_text)
             raise ValueError("Имя программы не указано в файле конфигурации")
         else:
             return program_name
+        
+    def __get_current_program_version(self):
+        """Returns the current program version"""
+        if self.config_data is None: # Check that configuration data is loaded
+            notification_text = "Данные файла конфигурации не загружены" # Notification text
+            # We display a notification
+            Notificator.show_notification(notify_type="error", notify_title="Ошибка", notify_text=notification_text)
+            raise ValueError("Данные файла конфигурации не загружены")
+        
+        current_program_version = self.config_data.get("program_version_number") # Get the current program version
+
+        if current_program_version is None: # Check that the program name is set
+            notification_text = "Имя программы не указано в файле конфигурации" # Notification text
+            # We display a notification
+            Notificator.show_notification(notify_type="error", notify_title="Ошибка", notify_text=notification_text)
+            raise ValueError("Имя программы не указано в файле конфигурации")
+        else:
+            return current_program_version
+        
+    def __get_server_program_version(self):
+        """Returns the server program version"""
+        server_config_file_path = os.path.join(self.server_program_path, "config.yaml") # The path to the config file
+
+        if not os.path.exists(server_config_file_path): # Check the existence of the config file
+            notification_text = f"Файл конфигурации на сервере не найден.\nПуть: {server_config_file_path}"
+            
+            Notificator.show_notification(notify_type="error", notify_title="Ошибка", notify_text=notification_text)
+            raise ValueError(f"Файл конфигурации на сервере не найден.\nПуть: {server_config_file_path}")
+        
+        try:
+            with open(server_config_file_path, "r") as server_config_file: # Open the config file
+                server_config_data = yaml.safe_load(server_config_file) # We download the data from the config file
+
+        except Exception as e:
+            notification_text = f"Ошибка при чтении файла конфигурации на сервере.\nОшибка: {e}"
+            # We display a notification
+            Notificator.show_notification(notify_type="error", notify_title="Ошибка", notify_text=notification_text)
+            raise ValueError(f"Ошибка при чтении файла конфигурации на сервере.\nОшибка: {e}")
+        
+        return server_config_data.get("program_version_number") # Get the server program version
         
     def __perform_update(self):
         """Updates the program"""
         # Check that the current program path is set
         if not self.current_program_path or self.current_program_path is None:
             notification_text = "Текущий путь программы не установлен"
-            Notificator.show_notification(notify_type="error", notify_title="Ошибка", notify_text=notification_text) # We display a notification
+            # We display a notification
+            Notificator.show_notification(notify_type="error", notify_title="Ошибка", notify_text=notification_text)
             raise ValueError("Текущий путь программы не установлен")
         
         # Check that the path to the program on the server is set
         if not self.server_program_path or self.server_program_path is None:
             notification_text = "Путь к программе на сервере не установлен"
-            Notificator.show_notification(notify_type="error", notify_title="Ошибка", notify_text=notification_text) # We display a notification
+            # We display a notification
+            Notificator.show_notification(notify_type="error", notify_title="Ошибка", notify_text=notification_text)
             raise ValueError("Путь к программе на сервере не установлен")
         
         if not os.path.exists(self.current_program_path): # We check the existence of the current path to the program
             notification_text = f"Текущий путь к программе не найден.\nПуть: {self.current_program_path}"
-            Notificator.show_notification(notify_type="error", notify_title="Ошибка", notify_text=notification_text) # We display a notification
+            # We display a notification
+            Notificator.show_notification(notify_type="error", notify_title="Ошибка", notify_text=notification_text)
             raise FileNotFoundError(f"Текущий путь к программе не найден. Путь: {self.current_program_path}")
         
         if not os.path.exists(self.server_program_path): # Check the existence of the path to the program on the server
             notification_text = f"Путь к прогамме на сервере не найден.\nПуть: {self.server_program_path}"
-            Notificator.show_notification(notify_type="error", notify_title="Ошибка", notify_text=notification_text) # We display a notification
+            # We display a notification
+            Notificator.show_notification(notify_type="error", notify_title="Ошибка", notify_text=notification_text)
             raise FileNotFoundError(f"Путь к прогамме на сервере не найден. Путь: {self.server_program_path}")
         
         try:
