@@ -52,6 +52,29 @@ class Controller:
         """Triggers the program update"""
         self.model.perform_update_in_thread() # Call the program update
 
+    def check_update(self):
+        """Функция проверяет необдимость обновления программы"""
+        current_program_version = self.model.current_program_version # Get the current program version
+        server_program_version = self.model.server_program_version # Get the server program version
+
+        if current_program_version is None:
+            notification_text = "Произошла ошибка при получении текущей версии программы"
+            # We display a notification
+            Notificator.show_notification(notify_type="error", notify_title="Ошибка", notify_text=notification_text)
+            raise ValueError("Произошла ошибка при получении текущей версии программы")
+
+        if server_program_version is None:
+            notification_text = "Произошла ошибка при получении версии программы на сервере"
+            # We display a notification
+            Notificator.show_notification(notify_type="error", notify_title="Ошибка", notify_text=notification_text)
+            raise ValueError("Произошла ошибка при получении версии программы на сервере")
+
+        # We check the versions
+        if current_program_version >= server_program_version: # If the current version is greater or the version are equal
+            return False
+        else:
+            return True
+        
     def on_update_complited(self, success):
         """Handles the completion of the program update"""
         if success:
