@@ -2,6 +2,8 @@ import os
 import sys
 import subprocess
 
+from classes.notifications import Notificator
+
 from PyQt5.QtCore import QTimer
 
 
@@ -26,12 +28,16 @@ class Controller:
         # Create the path to the program's executable file
         program_path = os.path.join(self.model.current_program_path, f"{program_name}.exe")
         
-        if not os.path.exists(program_path): # Проверяем существование программы
-            raise FileNotFoundError(f"Программа не найдена. Путь: {program_path}")
+        if not os.path.exists(program_path): # We check the existence of the program
+            notification_text = f"Программа {program_name} не найдена.\nПуть: {program_path}" # Notification text
+            Notificator.show_notification(notify_type="error", notify_title="Ошибка", notify_text=notification_text) # Show notification
+            raise FileNotFoundError(f"Программа не найдена. Путь: {program_path}") 
 
         try:
-            subprocess.Popen([program_path]) # Открываем программу
+            subprocess.Popen([program_path]) # Open the program
         except Exception as e:
+            notification_text = f"Ошибка при запуске программы {program_name}.\nОшибка: {e}" # Notification text
+            Notificator.show_notification(notify_type="error", notify_title="Ошибка", notify_text=notification_text) # Show notification
             raise IOError(f"Ошибка при запуске программы: {e}")
         
     def __update_label_text(self):
@@ -46,6 +52,8 @@ class Controller:
     def on_update_complited(self):
         """Handles the completion of the program update"""
         self.view.update_buttons_state(state=True)
+        notification_text = "Программа успешно обновлена"
+        Notificator.show_notification(notify_type="info", notify_title="Успешно", notify_text=notification_text) # Show notification
 
     def on_progress_changed(self, value):
         """Handles the change in ProgressBar value"""

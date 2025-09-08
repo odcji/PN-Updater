@@ -4,6 +4,8 @@ import yaml
 import shutil
 import threading
 
+from classes.notifications import Notificator
+
 from PyQt5.QtCore import QObject, pyqtSignal
 
 
@@ -20,16 +22,20 @@ class Model(QObject):
         self.program_name = self.__get_program_name() # Get the program name
 
     def __get_config_data(self):
-        """Функция возвращает данные из файла конфигурации"""
-        config_file_path = os.path.join(self.current_program_path, "config.yaml") # Путь к файлу конфигу
+        """The function returns data from the configuration file"""
+        config_file_path = os.path.join(self.current_program_path, "config.yaml") # The Way to the Config file
 
-        if not os.path.exists(config_file_path): # Проверяем существование файла конфигурации
+        if not os.path.exists(config_file_path): # ПRover the existence of a configuration file
+            notification_text = f"Файл конфигурации не найден.\nПуть: {config_file_path}" # Notification text
+            Notificator.show_notification(notify_type="error", notify_title="Ошибка", notify_text=notification_text) # We display a notification
             raise FileNotFoundError(f"Файл конфигурации не найден. Путь: {config_file_path}")
 
         try:
-            with open(config_file_path, "r") as config_file: # Открываем файл конфигурации
-                config_data = yaml.safe_load(config_file) # Загружаем данные из файла конфигурации
+            with open(config_file_path, "r") as config_file: # Open the configuration file
+                config_data = yaml.safe_load(config_file) # We download the data from the configuration file
         except Exception as e:
+            notification_text = f"Ошибка при чтении файла конфигурации.\nОшибка: {e}" # Notification text"
+            Notificator.show_notification(notify_type="error", notify_title="Ошибка", notify_text=notification_text) # We display a notification
             raise IOError(f"Ошибка при чтении файла конфигурации: {e}")
         
         return config_data
@@ -45,24 +51,32 @@ class Model(QObject):
     def __get_server_program_path(self):
         """Returns the path to the program on the server"""
         if self.config_data is None: # Check that configuration data is loaded
-            raise ValueError("Configuration data not loaded")
+            notification_text = "Данные конфигурации не загружены" # Notification text
+            Notificator.show_notification(notify_type="error", notify_title="Ошибка", notify_text=notification_text) # We display a notification
+            raise ValueError("Данные конфигурации не загружены")
         
         server_program_path = self.config_data.get("server_program_path") # Get the path to the program on the server
 
         if server_program_path is None: # Check that the path to the program on the server is set
-            raise ValueError("Path to program on server not specified in configuration file")
+            notification_text = "Путь к программе на сервере не указан в файле конфигурации" # Notification text
+            Notificator.show_notification(notify_type="error", notify_title="Ошибка", notify_text=notification_text) # We display a notification
+            raise ValueError("Путь к программе на сервере не указан в файле конфигурации")
         else:
             return server_program_path
         
     def __get_program_name(self):
         """Returns the program name"""
         if self.config_data is None: # Check that configuration data is loaded
-            raise ValueError("Configuration data not loaded")
+            notification_text = "Данные файла конфигурации не загружены" # Notification text
+            Notificator.show_notification(notify_type="error", notify_title="Ошибка", notify_text=notification_text) # We display a notification
+            raise ValueError("Данные файла конфигурации не загружены")
         
         program_name = self.config_data.get("program_name") # Get the program name
 
         if program_name is None: # Check that the program name is set
-            raise ValueError("Program name not specified in configuration file")
+            notification_text = "Имя программы не указано в файле конфигурации" # Notification text
+            Notificator.show_notification(notify_type="error", notify_title="Ошибка", notify_text=notification_text) # We display a notification
+            raise ValueError("Имя программы не указано в файле конфигурации")
         else:
             return program_name
         
@@ -70,16 +84,24 @@ class Model(QObject):
         """Updates the program"""
         # Check that the current program path is set
         if not self.current_program_path or self.current_program_path is None:
-            raise ValueError("Current program path not set")
+            notification_text = "Текущий путь программы не установлен"
+            Notificator.show_notification(notify_type="error", notify_title="Ошибка", notify_text=notification_text) # We display a notification
+            raise ValueError("Текущий путь программы не установлен")
         
         # Check that the path to the program on the server is set
         if not self.server_program_path or self.server_program_path is None:
-            raise ValueError("Path to program on server not set")
+            notification_text = "Путь к программе на сервере не установлен"
+            Notificator.show_notification(notify_type="error", notify_title="Ошибка", notify_text=notification_text) # We display a notification
+            raise ValueError("Путь к программе на сервере не установлен")
         
-        if not os.path.exists(self.current_program_path): # Проверяем существование текущего пути к программе
+        if not os.path.exists(self.current_program_path): # We check the existence of the current path to the program
+            notification_text = f"Текущий путь к программе не найден.\nПуть: {self.current_program_path}"
+            Notificator.show_notification(notify_type="error", notify_title="Ошибка", notify_text=notification_text) # We display a notification
             raise FileNotFoundError(f"Текущий путь к программе не найден. Путь: {self.current_program_path}")
         
-        if not os.path.exists(self.server_program_path): # Проверяем существование пути к прогамме на сервере
+        if not os.path.exists(self.server_program_path): # Check the existence of the path to the program on the server
+            notification_text = f"Путь к прогамме на сервере не найден.\nПуть: {self.server_program_path}"
+            Notificator.show_notification(notify_type="error", notify_title="Ошибка", notify_text=notification_text) # We display a notification
             raise FileNotFoundError(f"Путь к прогамме на сервере не найден. Путь: {self.server_program_path}")
         
         try:
@@ -110,7 +132,7 @@ class Model(QObject):
                 progress = int((files_processed / total_files) * 100)
                 self.progress_changed.emit(progress) # Progress bar value change signal
 
-                self.process_changed.emit(f"deleting file - {file}") # Update text in QLabel 'Процесс'
+                self.process_changed.emit(f"удаление файла - {file}") # Update text in QLabel 'Процесс'
 
             # Copy new program files
             if server_program_files: # Check if there are files in the program path on the server
@@ -129,17 +151,18 @@ class Model(QObject):
 
                     files_processed += 1
                     progress = int((files_processed / total_files) * 100)
-                    self.progress_changed.emit(progress) # Сигнал изменения значения прогресс бара
+                    self.progress_changed.emit(progress) # A signal for changing the value of the progress bar
                     
-                    self.process_changed.emit(f"копирование файла - {file}") # Обновляем текст в QLabel 'Процесс'
+                    self.process_changed.emit(f"копирование файла - {file}") # We update the text in QLabel 'Процесс'
 
             self.progress_changed.emit(100) # Fully fill the progress bar
-            self.process_changed.emit("Program successfully updated") # Update text in QLabel 'Процесс'
+            self.process_changed.emit("Программа успешно обновлена") # Update text in QLabel 'Процесс'
 
             callback() # Call the update completion function
 
         except Exception as e:
-            raise IOError(f"An error occurred during program update. Error: {e}") 
+            notification_text = f"Ошибка произошла во время обновления программы.\nОшибка:{e}"
+            raise IOError(f"Ошибка произошла во время обновления программы. Ошибка:{e}") 
         
     def perform_update_in_thread(self, callback):
         """Launches the program update in a separate thread"""
