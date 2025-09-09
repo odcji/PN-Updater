@@ -28,7 +28,6 @@ class Ui_MainWindow(object):
         self.update_label = QtWidgets.QLabel(self.centralwidget)
         font = QtGui.QFont()
         font.setFamily("Segoe UI")
-        font.setPointSize(-1)
         self.update_label.setFont(font)
         self.update_label.setStyleSheet("QLabel {\n"
 "    color: #2D3748;\n"
