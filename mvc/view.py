@@ -16,6 +16,11 @@ class View:
         """The function updates the value of Progressbar """
         self.ui.progressBar.setValue(value) # We update the value of Progressbar
 
+    def set_progress_bar_label_value(self, value):
+        """The function updates the value of Progressbar label"""
+        progress_text = f"{value}%" # Create a text
+        self.ui.progressBar_label.setText(progress_text) # We update the text in Qlabel
+
     def update_buttons_state(self, open_btn_state=bool, exit_btn_state=bool):
         """The function updates the state of the 'Открыть' and 'Выход' buttons"""
         self.ui.open_pushButton.setEnabled(open_btn_state)

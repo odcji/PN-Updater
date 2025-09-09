@@ -92,6 +92,7 @@ class Controller:
     def on_progress_changed(self, value):
         """Handles the change in ProgressBar value"""
         self.view.set_progress_bar_value(value) # Update the value in the progress bar
+        self.view.set_progress_bar_label_value(value) # Update the value in the progress bar label
 
     def on_process_changed(self, text):
         """Handles the change in QLabel 'Процесс' text"""
