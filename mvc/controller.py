@@ -25,7 +25,7 @@ class Controller:
         """Launches the program"""
         program_name = self.model.config_data.get("program_name") # Record the program name
         # Create the path to the program's executable file
-        program_path = os.path.join(self.model.config_data.get("current_program_path"), f"{program_name}.exe")
+        program_path = os.path.join(self.model.current_program_path, f"{program_name}.exe")
         
         if not os.path.exists(program_path): # We check the existence of the program
             notification_text = f"Программа {program_name} не найдена.\nПуть: {program_path}" # Notification text
@@ -35,6 +35,7 @@ class Controller:
 
         try:
             subprocess.Popen([program_path]) # Open the program
+            sys.exit() # Close the program
         except Exception as e:
             notification_text = f"Ошибка при запуске программы {program_name}.\nОшибка: {e}" # Notification text
             # Show notification
