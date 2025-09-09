@@ -4,8 +4,6 @@ import subprocess
 
 from classes.notifications import Notificator
 
-from PyQt5.QtCore import QTimer
-
 
 class Controller:
     def __init__(self, model, view):
@@ -25,9 +23,9 @@ class Controller:
 
     def __launch_program(self):
         """Launches the program"""
-        program_name = self.model.program_name # Record the program name
+        program_name = self.model.config_data.get("program_name") # Record the program name
         # Create the path to the program's executable file
-        program_path = os.path.join(self.model.current_program_path, f"{program_name}.exe")
+        program_path = os.path.join(self.model.config_data.get("current_program_path"), f"{program_name}.exe")
         
         if not os.path.exists(program_path): # We check the existence of the program
             notification_text = f"Программа {program_name} не найдена.\nПуть: {program_path}" # Notification text
@@ -45,7 +43,7 @@ class Controller:
         
     def __update_label_text(self):
         """Sets the text in QLabel 'Обновление'"""
-        text = self.model.program_name # Record the program name
+        text = self.model.config_data.get("program_name") # Record the program name
         self.view.set_update_label_text(text=text) # Update the text in QLabel
 
     def update_program(self):
@@ -54,7 +52,7 @@ class Controller:
 
     def check_update(self):
         """Функция проверяет необдимость обновления программы"""
-        current_program_version = self.model.current_program_version # Get the current program version
+        current_program_version = self.model.config_data.get("program_version_number") # Get the current program version
         server_program_version = self.model.server_program_version # Get the server program version
 
         if current_program_version is None:
