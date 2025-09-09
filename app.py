@@ -8,6 +8,7 @@ from mvc.controller import Controller
 
 from classes.notifications import Notificator
 
+from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtWidgets import QApplication, QMainWindow
 
@@ -43,6 +44,13 @@ if __name__ == "__main__":
     )
 
     app = QApplication(sys.argv)
+
+    # Fonts for the application
+    default_font = QFont()
+    default_font.setFamilies(["Segoe UI", "Inter", "Arial", "Noto Sans", "sans-serif"])
+
+    app.setFont(default_font) # We set the default font for the entire application
+
     window = MyWindow()
     window.show()
     sys.exit(app.exec_())
