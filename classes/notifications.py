@@ -19,12 +19,11 @@ class Notificator:
         
         
         msg_box = QMessageBox()
-        msg_box.setWindowIcon(QIcon(":/icons/icon.ico")) # Устанавливаем иконку окна
+        msg_box.setWindowIcon(QIcon(":/icons/icon.ico")) # Install the window icon
         msg_box.setWindowTitle(notify_title)
         msg_box.setText(notify_text)
 
         # We display a notification depending on the transferred type of notification
-        # Устанавливаем иконку внутри самого сообщения
         if notify_type == "info":
             msg_box.setIcon(QMessageBox.Information)
         elif notify_type == "warning":
