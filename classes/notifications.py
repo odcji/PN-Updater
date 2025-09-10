@@ -2,7 +2,13 @@ from PyQt5.QtWidgets import QMessageBox
 
 class Notificator:
     def show_notification(notify_type="", notify_title="", notify_text=""):
-        """Function for showing notifications"""
+        """Shows a notification message box.
+
+        Args:
+            notify_type (str): The type of notification. Can be "info", "warning", or "error".
+            notify_title (str): The title of the notification.
+            notify_text (str): The main text of the notification.
+        """
         if not notify_type:
             return
         
