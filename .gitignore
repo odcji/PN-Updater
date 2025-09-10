@@ -12,7 +12,6 @@ build/
 dist/
 sdist/
 *.egg-info/
-*.spec
 
 # Environments
 venv/

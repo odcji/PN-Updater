@@ -8,9 +8,11 @@ from mvc.controller import Controller
 
 from classes.notifications import Notificator
 
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont, QIcon
 from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QApplication, QMainWindow
+
+from resources import resources_rc
 
 
 class MyWindow(QMainWindow):
@@ -19,6 +21,10 @@ class MyWindow(QMainWindow):
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+
+        # Set window icon
+        icon = QIcon(":/icons/icon.ico")
+        self.setWindowIcon(icon)
 
         # Install the base size of the window programmatically
         self.resize(self.minimumSizeHint())
