@@ -10,25 +10,31 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
+        MainWindow.setEnabled(True)
         MainWindow.resize(400, 200)
         MainWindow.setMinimumSize(QtCore.QSize(400, 200))
-        MainWindow.setMaximumSize(QtCore.QSize(400, 200))
+        MainWindow.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setEnabled(True)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.centralwidget)
-        self.verticalLayout_2.setContentsMargins(10, 10, 10, 10)
-        self.verticalLayout_2.setSpacing(20)
+        self.verticalLayout_2.setContentsMargins(16, 16, 16, 16)
+        self.verticalLayout_2.setSpacing(32)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
-        spacerItem = QtWidgets.QSpacerItem(20, 3, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.verticalLayout_2.addItem(spacerItem)
         self.update_label = QtWidgets.QLabel(self.centralwidget)
         font = QtGui.QFont()
-        font.setPointSize(24)
+        font.setFamily("Segoe UI")
         self.update_label.setFont(font)
+        self.update_label.setStyleSheet("QLabel {\n"
+"    color: #2D3748;\n"
+"    font-family: \'Segoe UI\';\n"
+"    font-size: 24px;\n"
+"    font-weight: semibold;\n"
+"}")
         self.update_label.setObjectName("update_label")
         self.verticalLayout_2.addWidget(self.update_label)
         self.process_frame = QtWidgets.QFrame(self.centralwidget)
@@ -40,19 +46,57 @@ class Ui_MainWindow(object):
         self.verticalLayout.setSpacing(10)
         self.verticalLayout.setObjectName("verticalLayout")
         self.process_label = QtWidgets.QLabel(self.process_frame)
+        self.process_label.setStyleSheet("QLabel {\n"
+"    color: #718096;\n"
+"    font-family: \'Segoe UI\';\n"
+"    font-size: 12px;\n"
+"    font-weight: normal;\n"
+"}")
         self.process_label.setObjectName("process_label")
         self.verticalLayout.addWidget(self.process_label)
-        self.progressBar = QtWidgets.QProgressBar(self.process_frame)
-        self.progressBar.setMinimumSize(QtCore.QSize(0, 25))
-        font = QtGui.QFont()
-        font.setPointSize(14)
-        self.progressBar.setFont(font)
+        self.bar_frame = QtWidgets.QFrame(self.process_frame)
+        self.bar_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.bar_frame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.bar_frame.setObjectName("bar_frame")
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.bar_frame)
+        self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_2.setSpacing(16)
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.progressBar = QtWidgets.QProgressBar(self.bar_frame)
+        self.progressBar.setMinimumSize(QtCore.QSize(0, 11))
+        self.progressBar.setMaximumSize(QtCore.QSize(16777215, 11))
+        self.progressBar.setStyleSheet("QProgressBar {\n"
+"    border: none;\n"
+"    background-color: #E2E8F0;\n"
+"    border-radius: 5px;\n"
+"    text-align: right;\n"
+"}\n"
+"\n"
+"QProgressBar::chunk {\n"
+"    background-color: #2D3748;\n"
+"    border-radius: 7px;\n"
+"    margin: -2px 0;\n"
+"}")
         self.progressBar.setProperty("value", 0)
+        self.progressBar.setTextVisible(False)
         self.progressBar.setObjectName("progressBar")
-        self.verticalLayout.addWidget(self.progressBar)
+        self.horizontalLayout_2.addWidget(self.progressBar)
+        self.progressBar_label = QtWidgets.QLabel(self.bar_frame)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.progressBar_label.sizePolicy().hasHeightForWidth())
+        self.progressBar_label.setSizePolicy(sizePolicy)
+        self.progressBar_label.setStyleSheet("QLabel {\n"
+"    color: #C60B30;\n"
+"    font-family: \'Segoe UI\';\n"
+"    font-size: 12px;\n"
+"    font-weight: normal;\n"
+"}")
+        self.progressBar_label.setObjectName("progressBar_label")
+        self.horizontalLayout_2.addWidget(self.progressBar_label)
+        self.verticalLayout.addWidget(self.bar_frame)
         self.verticalLayout_2.addWidget(self.process_frame)
-        spacerItem1 = QtWidgets.QSpacerItem(20, 4, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.verticalLayout_2.addItem(spacerItem1)
         self.buttons_frame = QtWidgets.QFrame(self.centralwidget)
         self.buttons_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.buttons_frame.setFrameShadow(QtWidgets.QFrame.Raised)
@@ -61,16 +105,67 @@ class Ui_MainWindow(object):
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout.setSpacing(10)
         self.horizontalLayout.setObjectName("horizontalLayout")
-        spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.horizontalLayout.addItem(spacerItem2)
+        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout.addItem(spacerItem)
         self.open_pushButton = QtWidgets.QPushButton(self.buttons_frame)
         self.open_pushButton.setEnabled(False)
-        self.open_pushButton.setMinimumSize(QtCore.QSize(100, 0))
+        self.open_pushButton.setMinimumSize(QtCore.QSize(100, 25))
+        self.open_pushButton.setMaximumSize(QtCore.QSize(100, 25))
+        self.open_pushButton.setStyleSheet("QPushButton {\n"
+"    background-color: #C60B30;\n"
+"    border: none;\n"
+"    color: white;\n"
+"    border-radius: 12px;\n"
+"    font-family: \'Segoe UI\';\n"
+"    font-size: 12px;\n"
+"    font-weight: normal;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"    background-color: #AE0A2A;\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"    background-color: #950823;\n"
+"}\n"
+"\n"
+"QPushButton:disabled {\n"
+"    background-color: #F5B8C4;\n"
+"    color: white;\n"
+"}")
         self.open_pushButton.setObjectName("open_pushButton")
         self.horizontalLayout.addWidget(self.open_pushButton)
         self.exit_pushButton = QtWidgets.QPushButton(self.buttons_frame)
         self.exit_pushButton.setEnabled(False)
-        self.exit_pushButton.setMinimumSize(QtCore.QSize(100, 0))
+        self.exit_pushButton.setMinimumSize(QtCore.QSize(100, 25))
+        self.exit_pushButton.setMaximumSize(QtCore.QSize(100, 25))
+        self.exit_pushButton.setStyleSheet("QPushButton {\n"
+"    background-color: #FFFFFF;\n"
+"    color: #2D3748;\n"
+"    border: 1px solid #E2E8F0;\n"
+"    border-radius: 12px;\n"
+"    font-family: \'Segoe UI\';\n"
+"    font-size: 12px;\n"
+"    font-weight: normal;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"    color: #1D242F;\n"
+"    border: none;\n"
+"    background-color: #ABBCD3;\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"    color: #131820;\n"
+"    border: none;\n"
+"    background-color: #8AA2C2;\n"
+"}\n"
+"\n"
+"QPushButton:disabled {\n"
+"    color: #718096;\n"
+"    border: 1px solid #E2E8F0;\n"
+"    background-color: #FFFFFF;\n"
+"}")
         self.exit_pushButton.setObjectName("exit_pushButton")
         self.horizontalLayout.addWidget(self.exit_pushButton)
         self.verticalLayout_2.addWidget(self.buttons_frame)
@@ -81,8 +176,9 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.update_label.setText(_translate("MainWindow", "Обновление"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "PN Updater"))
+        self.update_label.setText(_translate("MainWindow", "Обновление:"))
         self.process_label.setText(_translate("MainWindow", "Процесс:"))
+        self.progressBar_label.setText(_translate("MainWindow", "0%"))
         self.open_pushButton.setText(_translate("MainWindow", "Открыть"))
         self.exit_pushButton.setText(_translate("MainWindow", "Выход"))
