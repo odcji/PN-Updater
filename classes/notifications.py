@@ -1,6 +1,11 @@
+from resources import resources_rc
+
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QMessageBox
 
+
 class Notificator:
+    @staticmethod
     def show_notification(notify_type="", notify_title="", notify_text=""):
         """Shows a notification message box.
 
@@ -12,12 +17,21 @@ class Notificator:
         if not notify_type:
             return
         
+        
+        msg_box = QMessageBox()
+        msg_box.setWindowIcon(QIcon(":/icons/icon.ico")) # Устанавливаем иконку окна
+        msg_box.setWindowTitle(notify_title)
+        msg_box.setText(notify_text)
+
         # We display a notification depending on the transferred type of notification
+        # Устанавливаем иконку внутри самого сообщения
         if notify_type == "info":
-            QMessageBox.information(None, notify_title, notify_text) # Information
+            msg_box.setIcon(QMessageBox.Information)
         elif notify_type == "warning":
-            QMessageBox.warning(None, notify_title, notify_text) # Warning
+            msg_box.setIcon(QMessageBox.Warning)
         elif notify_type == "error":
-            QMessageBox.critical(None, notify_title, notify_text) # Error
+            msg_box.setIcon(QMessageBox.Critical)
         else:
             return
+        
+        msg_box.exec_()
