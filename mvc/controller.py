@@ -7,6 +7,12 @@ from classes.notifications import Notificator
 
 class Controller:
     def __init__(self, model, view):
+        """Initializes the Controller.
+
+        Args:
+            model: The application's model.
+            view: The application's view.
+        """
         self.model = model
         self.view = view
 
@@ -22,7 +28,12 @@ class Controller:
         self.model.update_complited.connect(self.on_update_complited) # Update completion signal
 
     def __launch_program(self):
-        """Launches the program"""
+        """Launches the main program.
+
+        Raises:
+            FileNotFoundError: If the program executable is not found.
+            IOError: If there is an error launching the program.
+        """
         program_name = self.model.config_data.get("program_name") # Record the program name
         # Create the path to the program's executable file
         program_path = os.path.join(self.model.current_program_path, f"{program_name}.exe")
@@ -43,16 +54,23 @@ class Controller:
             raise IOError(f"Ошибка при запуске программы: {e}")
         
     def __update_label_text(self):
-        """Sets the text in QLabel 'Обновление'"""
+        """Sets the text of the 'Обновление' label."""
         text = self.model.config_data.get("program_name") # Record the program name
         self.view.set_update_label_text(text=text) # Update the text in QLabel
 
     def update_program(self):
-        """Triggers the program update"""
+        """Triggers the program update process."""
         self.model.perform_update_in_thread() # Call the program update
 
     def check_update(self):
-        """Функция проверяет необдимость обновления программы"""
+        """Checks if a program update is required.
+
+        Returns:
+            bool: True if an update is required, False otherwise.
+
+        Raises:
+            ValueError: If the current or server program version cannot be retrieved.
+        """
         current_program_version = self.model.config_data.get("program_version_number") # Get the current program version
         server_program_version = self.model.server_program_version # Get the server program version
 
@@ -75,7 +93,11 @@ class Controller:
             return True
         
     def on_update_complited(self, success):
-        """Handles the completion of the program update"""
+        """Handles the completion of the program update.
+
+        Args:
+            success (bool): True if the update was successful, False otherwise.
+        """
         if success:
             self.view.update_buttons_state(open_btn_state=True, exit_btn_state=True)
             notification_text = "Программа успешно обновлена"
@@ -89,18 +111,26 @@ class Controller:
             Notificator.show_notification(notify_type="error", notify_title="Ошибка обновления", notify_text=notification_text)
 
     def on_progress_changed(self, value):
-        """Handles the change in ProgressBar value"""
+        """Handles the change in the ProgressBar's value.
+
+        Args:
+            value (int): The new progress value.
+        """
         self.view.set_progress_bar_value(value) # Update the value in the progress bar
         self.view.set_progress_bar_label_value(value) # Update the value in the progress bar label
 
     def on_process_changed(self, text):
-        """Handles the change in QLabel 'Процесс' text"""
+        """Handles the change in the 'Процесс' QLabel's text.
+
+        Args:
+            text (str): The new text for the label.
+        """
         self.view.set_process_text(text) # Update the text in QLabel
 
     def on_open_button_clicked(self):
-        """Handles the 'Открыть' button click"""
+        """Handles the 'Открыть' button click event."""
         self.__launch_program() # Launch the program
 
     def on_exit_button_clicked(self):
-        """Handles the 'Выход' button click"""
+        """Handles the 'Выход' button click event."""
         sys.exit() # Exit the program

@@ -9,6 +9,7 @@ from mvc.controller import Controller
 from classes.notifications import Notificator
 
 from PyQt5.QtGui import QFont
+from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QApplication, QMainWindow
 
 
@@ -30,9 +31,7 @@ class MyWindow(QMainWindow):
         # We check the need to update
         self.is_update_available = self.controller.check_update() # Check for an update
         if self.is_update_available:
-            # We call the program output
-            # QTimer.singleShot(0, self.controller.update_program) 
-            pass
+            QTimer.singleShot(0, self.controller.update_program) # We call the program output
         else:
             Notificator.show_notification(notify_type="info", notify_title="Обновление", notify_text="Обновление не требуется")
             self.view.update_buttons_state(open_btn_state=True, exit_btn_state=True)

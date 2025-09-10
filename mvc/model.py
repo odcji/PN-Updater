@@ -16,6 +16,7 @@ class Model(QObject):
 
 
     def __init__(self):
+        """Initializes the Model."""
         super().__init__()
 
         self.current_program_path = self.__get_base_path() # Get the current program path
@@ -23,7 +24,11 @@ class Model(QObject):
         self.server_program_version = self.__get_server_program_version() # Get the server program version
 
     def __get_base_path(self):
-        """Returns the path to the executable file or script"""
+        """Returns the base path of the executable or script.
+
+        Returns:
+            str: The absolute path to the program's base directory.
+        """
         if getattr(sys, 'frozen', False):
             return os.path.dirname(sys.executable) # Path for a compiled .exe file
         else:
@@ -31,7 +36,15 @@ class Model(QObject):
             return os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
     def __get_config_data(self):
-        """The function returns data from the configuration file"""
+        """Reads and returns data from the configuration file (config.yaml).
+
+        Returns:
+            dict: A dictionary containing the configuration data.
+
+        Raises:
+            FileNotFoundError: If the config.yaml file is not found.
+            IOError: If there is an error reading the configuration file.
+        """
         config_file_path = os.path.join(self.current_program_path, "config.yaml") # The Way to the Config file
 
         if not os.path.exists(config_file_path): # ПRover the existence of a configuration file
@@ -52,7 +65,14 @@ class Model(QObject):
         return config_data
         
     def __get_server_program_version(self):
-        """Returns the server program version"""
+        """Retrieves the program version from the server's configuration file.
+
+        Returns:
+            str: The version number of the program on the server.
+
+        Raises:
+            ValueError: If the server configuration file is not found or cannot be read.
+        """
         server_config_file_path = os.path.join(self.config_data.get("server_program_path"), "config.yaml") # The path to the config file
 
         if not os.path.exists(server_config_file_path): # Check the existence of the config file
@@ -74,7 +94,12 @@ class Model(QObject):
         return server_config_data.get("program_version_number") # Get the server program version
         
     def __perform_update(self):
-        """Updates the program"""
+        """Performs the program update by deleting old files and copying new ones.
+
+        Raises:
+            ValueError: If current_program_path or server_program_path are not set.
+            FileNotFoundError: If current_program_path or server_program_path do not exist.
+        """
         # Check that the current program path is set
         if not self.current_program_path or self.current_program_path is None:
             notification_text = "Текущий путь программы не установлен"
@@ -163,7 +188,11 @@ class Model(QObject):
             self.update_complited.emit(False) # Update completion signal
         
     def perform_update_in_thread(self):
-        """Launches the program update in a separate thread"""
+        """Launches the program update in a separate thread.
+
+        Returns:
+            threading.Thread: The created thread object.
+        """
         thread = threading.Thread(target=self.__perform_update) # Create a thread
         thread.daemon = True
         thread.start()
